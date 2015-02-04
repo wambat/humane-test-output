@@ -1,6 +1,7 @@
 (ns pjstadig.humane-test-output
   (:use [clojure.test])
   (:require [clojure.data :as data]
+            [puget.printer :as pug]
             [clojure.pprint :as pp]))
 
 (defonce activation-body
@@ -32,9 +33,9 @@
          (binding [*out* (pp/get-pretty-writer *out*)]
            (let [print-expected (fn [actual]
                                   (print "expected: ")
-                                  (pp/pprint expected)
+                                  (pug/cprint expected)
                                   (print "  actual: ")
-                                  (pp/pprint actual))]
+                                  (pug/cprint actual))]
              (if (seq diffs)
                (doseq [[actual [a b]] diffs
                        :when (or a b)]
@@ -42,11 +43,11 @@
                  (print "    diff:")
                  (if a
                    (do (print " - ")
-                       (pp/pprint a)
+                       (pug/cprint a)
                        (print "          + "))
                    (print " + "))
                  (when b
-                   (pp/pprint b)))
+                   (pug/cprint b)))
                (print-expected actual)))))))))
 
 (defn activate! []
